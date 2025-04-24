@@ -626,7 +626,7 @@ class MedConv_FLKAN_SS2D(nn.Module):
                 nn.Conv2d(hidden_dim // 2, hidden_dim // 2, 1),
                 asau(),
             )
-            self.fkan = FLKANLayer(in_features=hidden_dim // 2, out_features=hidden_dim // 2, grid=grid_size)
+            self.flkan = FLKANLayer(in_features=hidden_dim // 2, out_features=hidden_dim // 2, grid=grid_size)
 
     def forward(self, input: torch.Tensor):
         input_left, input_right = input.chunk(2, dim=-1)
