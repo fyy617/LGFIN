@@ -520,7 +520,7 @@ class DepthwiseSeparableConv(nn.Module):
         
 class FourierLinearKANLayer(nn.Module):
     def __init__(self, input_dim, output_dim, gridsize, addbias=True, smooth_initialization=False):
-        super(FourierKANLayer, self).__init__()
+        super(FourierLinearKANLayer, self).__init__()
         self.gridsize = gridsize
         self.addbias = addbias
         self.inputdim = input_dim
