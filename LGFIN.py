@@ -257,7 +257,7 @@ class asau(nn.Module):
         self.w2 = nn.Parameter(torch.tensor(1.0))
 
     def forward(self, x):
-        w0 = self.w0  # 使用类属性而不是重新定义局部变量
+        w0 = self.w0  
         return w0 * x + ((1.0 - w0) * x * torch.tanh(self.w2 * F.softplus((1.0 - w0) * self.w1 * x)))
 
 class SS2D(nn.Module):
@@ -565,13 +565,13 @@ class FourierKANLayer(nn.Module):
         y_cos = torch.sum(c * self.fouriercoeffs[0:1], (-2, -1))  # Cosine terms
         y_sin = torch.sum(s * self.fouriercoeffs[1:2], (-2, -1))  # Sine terms
 
-        # Add the constant term a0  a0影响的是输入特征如何转换为输出特征
+        # Add the constant term a0  
         y = torch.matmul(x, self.a0.T)  # Linear combination of inputs with a0
 
         # Combine all terms
         y += y_cos + y_sin
 
-        # Add bias if enabled 在最终输出的基础上提供了一个全局的偏移
+        # Add bias if enabled 
         if self.addbias:
             y += self.bias
 
@@ -589,7 +589,7 @@ class FKANLayer(nn.Module):
         x = self.fkan(x)
         return self.norm(x)
 
-class SS_Conv_SSM(nn.Module):
+class MedConv_FLKAN_SS2D(nn.Module):
     def __init__(
         self,
         hidden_dim: int = 0,
@@ -680,7 +680,7 @@ class LGFINLayer(nn.Module):
 
         self.blocks = nn.ModuleList(
             [
-                SS_Conv_SSM(
+                MedConv_FLKAN_SS2D(
                     hidden_dim=dim,
                     drop_path=drop_path[i] if isinstance(drop_path, list) else drop_path,
                     norm_layer=norm_layer,
