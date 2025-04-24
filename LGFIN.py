@@ -650,7 +650,7 @@ class SS_Conv_SSM(nn.Module):
         return output + input
 
 
-class VSSLayer(nn.Module):
+class LGFINLayer(nn.Module):
     def __init__(
         self,
         dim,
@@ -711,7 +711,7 @@ class VSSLayer(nn.Module):
         return x
 
 
-class VSSM(nn.Module):
+class LGFIN(nn.Module):
     def __init__(
         self,
         patch_size=4,
@@ -758,7 +758,7 @@ class VSSM(nn.Module):
 
         self.layers = nn.ModuleList()
         for i_layer in range(self.num_layers):
-            layer = VSSLayer(
+            layer = LGFINLayer(
                 dim=dims[i_layer],
                 depth=depths[i_layer],
                 d_state=math.ceil(dims[0] / 6) if d_state is None else d_state,
