@@ -507,7 +507,7 @@ def channel_shuffle(x: Tensor, groups: int) -> Tensor:
 
 
 class DepthwiseSeparableConv(nn.Module):
-    """深度可分离卷积"""
+
     def __init__(self, in_channels: int, out_channels: int, kernel_size: int, stride: int = 1, padding: int = 0):
         super().__init__()
         self.depthwise = nn.Conv2d(in_channels, in_channels, kernel_size, stride=stride, padding=padding, groups=in_channels)
@@ -518,7 +518,7 @@ class DepthwiseSeparableConv(nn.Module):
         x = self.pointwise(x)
         return x
         
-class FourierKANLayer(nn.Module):
+class FourierLinearKANLayer(nn.Module):
     def __init__(self, input_dim, output_dim, gridsize, addbias=True, smooth_initialization=False):
         super(FourierKANLayer, self).__init__()
         self.gridsize = gridsize
@@ -579,10 +579,10 @@ class FourierKANLayer(nn.Module):
         y = torch.reshape(y, outshape)
         return y
         
-class FKANLayer(nn.Module):
+class FLKANLayer(nn.Module):
     def __init__(self, in_features, out_features, grid):
         super().__init__()
-        self.fkan = FourierKANLayer(in_features, out_features, grid)
+        self.fkan = FourierLinearKANLayer(in_features, out_features, grid)
         self.norm = nn.LayerNorm(out_features)
 
     def forward(self, x):
@@ -615,7 +615,7 @@ class MedConv_FLKAN_SS2D(nn.Module):
 
         if self.use_conv_branch:
 
-            self.conv33conv33conv11 = nn.Sequential(
+            self.medconv = nn.Sequential(
                 nn.BatchNorm2d(hidden_dim // 2),
                 DepthwiseSeparableConv(hidden_dim // 2, hidden_dim // 2, 3, stride=1, padding=1),
                 nn.BatchNorm2d(hidden_dim // 2),
@@ -626,7 +626,7 @@ class MedConv_FLKAN_SS2D(nn.Module):
                 nn.Conv2d(hidden_dim // 2, hidden_dim // 2, 1),
                 asau(),
             )
-            self.fkan = FKANLayer(in_features=hidden_dim // 2, out_features=hidden_dim // 2, grid=grid_size)
+            self.fkan = FLKANLayer(in_features=hidden_dim // 2, out_features=hidden_dim // 2, grid=grid_size)
 
     def forward(self, input: torch.Tensor):
         input_left, input_right = input.chunk(2, dim=-1)
@@ -638,10 +638,10 @@ class MedConv_FLKAN_SS2D(nn.Module):
 
         if self.use_conv_branch:
             input_left = input_left.permute(0, 3, 1, 2).contiguous()
-            input_left = self.conv33conv33conv11(input_left)
+            input_left = self.medconv(input_left)
             
             input_left = input_left.permute(0, 2, 3, 1).contiguous()
-            input_left = self.fkan(input_left)
+            input_left = self.flkan(input_left)
         else:
             input_left = input_left
 
