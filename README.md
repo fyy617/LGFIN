@@ -59,7 +59,7 @@ The dataset format is as follows：
 
 
 
-## Train
+## ⭐Train⭐
 To train the model, we used the PyTorch deep learning framework and selected the Adam optimizer to optimize the model parameters. Specifically, we used normalization for data preprocessing,and used CrossEntropyLoss to calculate the loss function. During training, the batch size was set to 16, and iterative training was performed in a training cycle of 100 epochs.
 ```
 python train.py
@@ -68,7 +68,7 @@ python train.py
 
 
 
-## Test
+## ♥Test♥
 The following metrics are used to evaluate the classification performance of the model: Accuracy, Precision, Recall, Specificity, and F1-Score
 
 ```
