@@ -5,6 +5,7 @@ pip install submitit tensorboardX
 pip install triton==2.0.0
 pip install addict==2.4.0
 pip install dataclasses
+pip install numpy
 pip install pyyaml
 pip install albumentations
 pip install tensorboardX
